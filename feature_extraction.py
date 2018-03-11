@@ -18,20 +18,26 @@ class Feature_extractor:
         if not is_test:
             self.features = self.read_csv(self.TRAIN_PATH)
         else:
-            self.features = self.read_csv(self.TEST_PATH)
+            self.features = self.read_csv(self.TEST_PATH, is_test = True)
 
-    def read_csv(self, file_name = "train.csv"):
+    def read_csv(self, file_name = "train.csv",is_test = False):
         features = {}
         with open(file_name, "r") as f:
             lines = f.readlines()[1:]
         for line in lines:
             row = line.strip().split(",")
             file_name = str(row[0])+".jpg"
-            class_name = row[1]
-            row_feature = map(float, row[2:])
+            if not is_test:
+                class_name = row[1]
+                row_feature = map(float, row[2:])
+            else:
+                row_feature = map(float, row[1:])
             img_fe = Image_feature_extractor(os.path.join(self.IMAGE_PATH, file_name))
             print("Processing " + file_name + ".......")
-            features[file_name] = {'class_name' : class_name, "pre_feature" : row_feature, "cv_feature" : img_fe.get_all_features()}
+            if is_test == True:
+                features[file_name] = {"pre_feature" : row_feature, "cv_feature" : img_fe.get_all_features()}
+            else:
+                features[file_name] = {'class_name' : class_name, "pre_feature" : row_feature, "cv_feature" : img_fe.get_all_features()}
         return features
     
     def get_feature(self, file_name):
