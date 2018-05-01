@@ -16,7 +16,6 @@ import numpy as np
 import os
 from custom_layers.scale_layer import Scale
 from keras.utils import to_categorical
-from load_cifar10 import load_cifar10_data
 
 def load_leaf():
     num_classes = 99
